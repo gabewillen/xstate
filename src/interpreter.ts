@@ -800,7 +800,7 @@ export class Interpreter<
   public spawn<TChildContext>(
     entity: Spawnable<TChildContext>,
     name: string,
-    options: { sync: boolean } = { sync: false }
+    options: { sync: boolean , autoForward: boolean} = { sync: false, autoForward: false }
   ): Actor {
     if (isPromiseLike(entity)) {
       return this.spawnPromise(Promise.resolve(entity), name);
@@ -809,7 +809,7 @@ export class Interpreter<
     } else if (isObservable<TEvent>(entity)) {
       return this.spawnObservable(entity, name);
     } else if (isMachine(entity)) {
-      return this.spawnMachine(entity, { id: name, sync: options.sync });
+      return this.spawnMachine(entity, { id: name, sync: options.sync, autoForward: options.forward });
     } else {
       throw new Error(
         `Unable to spawn entity "${name}" of type "${typeof entity}".`
